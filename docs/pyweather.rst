@@ -12,6 +12,14 @@ pyweather.pyweather module
     :undoc-members:
     :show-inheritance:
 
+pyweather.utils module
+----------------------
+
+.. automodule:: pyweather.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

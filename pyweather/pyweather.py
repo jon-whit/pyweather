@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import urllib
 import requests
-from xml.dom import minidom
+from urllib.parse import quote
+import xml.etree.ElementTree as ET
+from pyweather import utils
 
 
 def noaa_conditions(station_id):
@@ -24,22 +25,58 @@ def noaa_conditions(station_id):
 
     return weather_data
 
-def yahoo_conditions(zip_code, units='f'):
+
+def fetch_woeid(location):
+    """
+    Fetch a location's corresponding WOEID.
+
+    :param location: (string) a location (e.g. 23454 or Salt Lake City, United States)
+    :return: a string containing the location's corresponding WOEID or None if the WOEID could not be found.
+    :raises:
+        :requests.exceptions.RequestException: requests could not open the URL.
+        :xml.etree.ElementTree.ParseError: xml.etree.ElementTree failed to parse the XML document.
+    """
+
+    woeid_query = ("http://locdrop.query.yahoo.com/v1/public/yql?"
+                   "q=select%20woeid%20from%20locdrop.placefinder%20"
+                   "where%20text='{0}'")
+    url = woeid_query.format(quote(location))
+
+    rss = utils.fetch_xml(url)
+
+    try:
+        woeid = rss.find("results/Result/woeid").text
+    except AttributeError:
+        return None
+
+    return woeid
+
+
+def yahoo_conditions(location, units='f'):
     """
     Gets the current weather conditions from Yahoo weather. For more information, see https://developer.yahoo.com/weather/.
 
-    :param zip_code: the U.S. zip code for the desired location
+    :param location: a location (e.g. Salt Lake City, United States)
     :param units: fahrenheit by default (f). You may also choose celsius by entering c instead of f.
     """
 
-    WEATHER_URL = 'http://weather.yahooapis.com/forecastrss?w=%s&u=%s'
-    WEATHER_NS = 'http://xml.weather.yahoo.com/ns/rss/1.0'
+    weather_url = 'http://weather.yahooapis.com/forecastrss?w=%s&u=%s'
+    weather_ns = 'http://xml.weather.yahoo.com/ns/rss/1.0'
+    woeid = fetch_woeid(location)
 
-    url = WEATHER_URL %(zip_code, units)
+    url = weather_url % (woeid, units)
 
     # Try to parse the RSS feed at the given URL.
     try:
-        dom = minidom.parse(urllib.request.urlopen(url))
+        rss = ET.parse(requests.get(url, stream=True).raw).getroot()
+
+        conditions = rss.find('channel/item/{%s}condition' % weather_ns)
+
+        return {
+            'current_condition': conditions.get('text'),
+            'current_temp': conditions.get('temp'),
+            'title': rss.findtext('channel/title')
+        }
     except:
         raise
 

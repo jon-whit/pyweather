@@ -9,16 +9,12 @@ Tests for `pyweather` module.
 """
 
 import unittest
-
 from pyweather import pyweather
 
 
 class TestPyweather(unittest.TestCase):
 
     def setUp(self):
-        pass
-
-    def test_something(self):
         pass
 
     def test_openweather_conditions1(self):
@@ -67,6 +63,40 @@ class TestPyweather(unittest.TestCase):
         cod = "404"
         self.assertEqual(conditions.get('message'), message)
         self.assertEqual(conditions.get('cod'), cod)
+
+    def test_fetch_woeid1(self):
+        """
+        Lookup the WOEID for various locations and assert they are all correct based on Ross Elliot's WOEID lookup. For
+        more information, see http://woeid.rosselliot.co.nz/
+        """
+
+        # Test Salt Lake City
+        location1 = "Salt Lake City, UT, United States"
+        expected_woeid1 = "2487610"
+        actual_woeid1 = pyweather.fetch_woeid(location1)
+        self.assertEqual(expected_woeid1, actual_woeid1)
+
+        # Test San Francisco
+        location2 = "San Francisco, CA, United States"
+        expected_woeid2 = "2487956"
+        actual_woeid2 = pyweather.fetch_woeid(location2)
+        self.assertEqual(expected_woeid2, actual_woeid2)
+
+        # Test New York City
+        location3 = "New York City, NY, United States"
+        expected_woeid3 = "2459115"
+        actual_woeid3 = pyweather.fetch_woeid(location3)
+        self.assertEqual(expected_woeid3, actual_woeid3)
+
+    def test_fetch_woeid2(self):
+        """
+        Lookup the WOEID for an unknown location.
+        """
+
+        location = "badcity"
+        expected_woeid = None
+        actual_woeid = pyweather.fetch_woeid(location)
+        self.assertEqual(expected_woeid, actual_woeid)
 
     def tearDown(self):
         pass
