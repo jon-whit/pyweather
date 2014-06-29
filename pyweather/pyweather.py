@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import urllib
 import requests
-from xml.dom import minidom
+from pyweather import utils
 
 
 def noaa_conditions(station_id):
@@ -19,27 +18,36 @@ def noaa_conditions(station_id):
 
     base_url = 'http://www.weather.gov/xml/current_obs/%s.xml' % station_id
 
-    # Get the current weather conditions in XML format.
-    weather_data = requests.get(base_url)
-
-    return weather_data
-
-def yahoo_conditions(zip_code, units='f'):
+def yahoo_conditions(location, units='f'):
     """
     Gets the current weather conditions from Yahoo weather. For more information, see https://developer.yahoo.com/weather/.
 
-    :param zip_code: the U.S. zip code for the desired location
+    :param location: a location (e.g. Salt Lake City, United States)
     :param units: fahrenheit by default (f). You may also choose celsius by entering c instead of f.
+    :return: The current weather conditions for the given location. None if the location is invalid.
     """
 
-    WEATHER_URL = 'http://weather.yahooapis.com/forecastrss?w=%s&u=%s'
-    WEATHER_NS = 'http://xml.weather.yahoo.com/ns/rss/1.0'
+    weather_url = 'http://weather.yahooapis.com/forecastrss?w=%s&u=%s'
+    weather_ns = 'http://xml.weather.yahoo.com/ns/rss/1.0'
+    woeid = utils.fetch_woeid(location)
 
-    url = WEATHER_URL %(zip_code, units)
+    if woeid is None:
+        return None
+
+    url = weather_url % (woeid, units)
 
     # Try to parse the RSS feed at the given URL.
     try:
-        dom = minidom.parse(urllib.request.urlopen(url))
+        rss = utils.fetch_xml(url)
+        conditions = rss.find('channel/item/{%s}condition' % weather_ns)
+
+        return {
+            'title': rss.findtext('channel/title'),
+            'current_condition': conditions.get('text'),
+            'current_temp': conditions.get('temp'),
+            'date': conditions.get('date'),
+            'code': conditions.get('code')
+        }
     except:
         raise
 
