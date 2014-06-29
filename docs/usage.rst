@@ -33,7 +33,7 @@ For a better list of the properties available, please refer to the API.
 Yahoo Weather Conditions
 ------------------------
 
-To get the current weather conditions from Yahoo's weather service:
+To get the current weather conditions from Yahoo's weather service::
 
     pyweather.yahoo_conditions(location)
 

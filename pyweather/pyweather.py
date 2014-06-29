@@ -52,12 +52,12 @@ def yahoo_conditions(location, units='f'):
         raise
 
 
-def openweather_conditions(city_name, units='imperial', lang='en'):
+def openweather_conditions(location, units='imperial', lang='en'):
     """
     Gets the current weather conditions (in JSON format) from the Open Weather Map service. For more information, see
     http://openweathermap.org/.
 
-    :param city_name: the name of the city and its state in 'city, state' format
+    :param location: the name of the city and its state in 'city, state' format
     :param units: the desired units of measurement
     :param lang: the language the data is returned with
     """
@@ -65,7 +65,7 @@ def openweather_conditions(city_name, units='imperial', lang='en'):
     base_url = 'http://api.openweathermap.org/data/2.5/weather'
 
     # Generate the data for the request.
-    payload = {'q':city_name, 'units':units, 'lang':lang}
+    payload = {'q':location, 'units':units, 'lang':lang}
 
     try:
         # Attempt to get the data from the Open Weather API.

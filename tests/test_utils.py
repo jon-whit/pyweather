@@ -9,7 +9,6 @@ Tests for `utils` module.
 """
 
 import unittest
-import requests.exceptions
 from pyweather import utils
 
 
