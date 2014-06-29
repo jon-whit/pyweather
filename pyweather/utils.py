@@ -1,5 +1,6 @@
 import requests
 import xml.etree.ElementTree as ET
+from urllib.parse import quote
 
 
 def fetch_xml(url):
@@ -8,8 +9,28 @@ def fetch_xml(url):
 
     :param url: the URL that the XML is located at.
     :return: the root element of the XML.
-    :raises:
-        :requests.exceptions.RequestException: Requests could not open the URL.
-        :xml.etree.ElementTree.ParseError: xml.etree.ElementTree failed to parse the XML document.
     """
-    return ET.parse(requests.get(url, stream=True).raw).getroot()
+
+    return ET.fromstring(requests.get(url).content)
+
+def fetch_woeid(location):
+    """
+    Fetch a location's corresponding WOEID.
+
+    :param location: (string) a location (e.g. 23454 or Salt Lake City, United States)
+    :return: a string containing the location's corresponding WOEID or None if the WOEID could not be found.
+    """
+
+    woeid_query = ("http://locdrop.query.yahoo.com/v1/public/yql?"
+                   "q=select%20woeid%20from%20locdrop.placefinder%20"
+                   "where%20text='{0}'")
+    url = woeid_query.format(quote(location))
+
+    rss = fetch_xml(url)
+
+    try:
+        woeid = rss.find("results/Result/woeid").text
+    except AttributeError:
+        return None
+
+    return woeid
