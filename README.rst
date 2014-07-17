@@ -5,7 +5,7 @@ pyweather
 .. image:: https://badge.fury.io/py/pyweather.png
     :target: http://badge.fury.io/py/pyweather
     
-.. image:: https://travis-ci.org/jon-whit/pyweather.png?branch=develop
+.. image:: https://travis-ci.org/jon-whit/pyweather.png?branch=master
         :target: https://travis-ci.org/jon-whit/pyweather
 
 .. image:: https://pypip.in/d/pyweather/badge.png
