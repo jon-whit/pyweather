@@ -9,16 +9,12 @@ Tests for `pyweather` module.
 """
 
 import unittest
-
 from pyweather import pyweather
 
 
 class TestPyweather(unittest.TestCase):
 
     def setUp(self):
-        pass
-
-    def test_something(self):
         pass
 
     def test_openweather_conditions1(self):
@@ -39,8 +35,8 @@ class TestPyweather(unittest.TestCase):
         For more information, see the Weather Parameters page http://openweathermap.org/weather-data.
         """
 
-        city_name = 'Salt Lake City, Utah'
-        conditions = pyweather.openweather_conditions(city_name)
+        location = 'Salt Lake City, Utah, United States'
+        conditions = pyweather.openweather_conditions(location)
 
         expected_keys = ['id', 'dt', 'coord', 'name', 'main', 'wind', 'clouds']
         actual_keys = conditions.keys()
@@ -51,22 +47,43 @@ class TestPyweather(unittest.TestCase):
     def test_openweather_conditions2(self):
         """
         Attempt to get the weather conditions for an unknown city. As per the API a JSON object will be returned like so:
-        {"message":"Error: Not found city","cod":"404"}
+        {"message":"Error: Not found city","cod":"404"}. Assert that None is returned, indicating that no weather data
+        could be retrieved.
         """
 
-        city_name = 'badcity'
-        conditions = pyweather.openweather_conditions(city_name)
+        location = 'badcity'
+        conditions = pyweather.openweather_conditions(location)
+        self.assertEqual(None, conditions)
 
-        expected_keys = ['id', 'dt', 'coord', 'name', 'main', 'wind', 'clouds']
+    def test_yahoo_conditions1(self):
+        """
+        Get the weather conditions for New York City, NY and verify that the returned object contains the properties:
+
+        title
+        current_condition
+        current_temp
+        date
+        code
+        """
+
+        city_name = "New York City, NY, United States"
+        conditions = pyweather.yahoo_conditions(city_name)
+
+        expected_keys = ['title', 'current_condition', 'current_temp', 'date', 'code']
         actual_keys = conditions.keys()
 
         outcome = all(k in actual_keys for k in expected_keys)
-        self.assertFalse(outcome)
+        self.assertTrue(outcome)
 
-        message = "Error: Not found city"
-        cod = "404"
-        self.assertEqual(conditions.get('message'), message)
-        self.assertEqual(conditions.get('cod'), cod)
+    def test_yahoo_conditions2(self):
+        """
+        Attempt to get the weather conditions for an unknown city. Assert that no conditions are returned (None).
+        """
+
+        location = "illegal_location"
+        conditions = pyweather.yahoo_conditions(location)
+        self.assertEqual(None, conditions)
+
 
     def tearDown(self):
         pass
