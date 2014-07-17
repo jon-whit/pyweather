@@ -13,6 +13,7 @@ def fetch_xml(url):
 
     return ET.fromstring(requests.get(url).content)
 
+
 def fetch_woeid(location):
     """
     Fetch a location's corresponding WOEID.
