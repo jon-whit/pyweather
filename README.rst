@@ -20,4 +20,4 @@ The pyweather project is a Python based wrapper for the Weather.com, Yahoo! weat
 Features
 --------
 
-* TODO
+* Add compatibility for Python 2.7
