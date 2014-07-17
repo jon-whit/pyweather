@@ -47,22 +47,13 @@ class TestPyweather(unittest.TestCase):
     def test_openweather_conditions2(self):
         """
         Attempt to get the weather conditions for an unknown city. As per the API a JSON object will be returned like so:
-        {"message":"Error: Not found city","cod":"404"}
+        {"message":"Error: Not found city","cod":"404"}. Assert that None is returned, indicating that no weather data
+        could be retrieved.
         """
 
         location = 'badcity'
         conditions = pyweather.openweather_conditions(location)
-
-        expected_keys = ['id', 'dt', 'coord', 'name', 'main', 'wind', 'clouds']
-        actual_keys = conditions.keys()
-
-        outcome = all(k in actual_keys for k in expected_keys)
-        self.assertFalse(outcome)
-
-        message = "Error: Not found city"
-        cod = "404"
-        self.assertEqual(conditions.get('message'), message)
-        self.assertEqual(conditions.get('cod'), cod)
+        self.assertEqual(None, conditions)
 
     def test_yahoo_conditions1(self):
         """

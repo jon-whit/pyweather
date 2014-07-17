@@ -6,7 +6,8 @@ from pyweather import utils
 
 def yahoo_conditions(location, units='f'):
     """
-    Gets the current weather conditions from Yahoo weather. For more information, see https://developer.yahoo.com/weather/.
+    Gets the current weather conditions from Yahoo weather. For more information, see
+    https://developer.yahoo.com/weather/.
 
     :param location: a location in 'city, state, country' format (e.g. Salt Lake City, Utah, United States)
     :param units: fahrenheit by default (f). You may also choose celsius by entering c instead of f.
@@ -46,6 +47,7 @@ def openweather_conditions(location, units='imperial', lang='en'):
     :param location: a location in 'city, state, country' format (e.g. Salt Lake City, Utah, United States)
     :param units: the desired units of measurement (imperial or metric)
     :param lang: the language the data is returned with
+    :return The current weather conditions for the given location. None if the location is invalid.
     """
 
     base_url = 'http://api.openweathermap.org/data/2.5/weather'
@@ -60,5 +62,8 @@ def openweather_conditions(location, units='imperial', lang='en'):
         raise
 
     weather_data = request.json()
+
+    if weather_data['cod'] == "404":
+        return None
 
     return weather_data
