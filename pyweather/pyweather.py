@@ -4,21 +4,6 @@ import requests
 from pyweather import utils
 
 
-def noaa_conditions(station_id):
-    """
-    Gets the current weather conditions from the National Oceanic and Atmospheric Administration's
-    (NOAA). For more information, see http://graphical.weather.gov/xml/.
-
-    To find the desired station ID point your browser to http://w1.weather.gov/xml/current_obs/seek.php?state=&Find=Find.
-    Then select the state you wish in the '-Select a State-' drop down box. Click 'Find'. Locate the 4-digit station ID.
-    For example, Salt Lake City is identified with the station ID KSLC.
-
-    :param station_id: the unique weather station ID for the desired location (see explanation above).
-    """
-
-    base_url = 'http://www.weather.gov/xml/current_obs/%s.xml' % station_id
-
-
 def yahoo_conditions(location, units='f'):
     """
     Gets the current weather conditions from Yahoo weather. For more information, see https://developer.yahoo.com/weather/.
