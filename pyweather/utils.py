@@ -1,6 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 from urllib.parse import quote
+from datetime import datetime
 
 
 def fetch_xml(url):
@@ -18,7 +19,7 @@ def fetch_woeid(location):
     """
     Fetch a location's corresponding WOEID.
 
-    :param location: (string) a location (e.g. 23454 or Salt Lake City, United States)
+    :param location: a location (e.g. 23454 or Salt Lake City, United States).
     :return: a string containing the location's corresponding WOEID or None if the WOEID could not be found.
     """
 
@@ -35,3 +36,12 @@ def fetch_woeid(location):
         return None
 
     return woeid
+
+def dt(u):
+    """
+    Converts a unix time 'u' to a datetime object 'd'.
+
+    :param u: a unix time.
+    :return: a datetime object representing the supplied unix time.
+    """
+    return datetime.datetime.utcfromtimestamp(u)
